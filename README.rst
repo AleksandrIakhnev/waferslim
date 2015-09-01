@@ -14,38 +14,40 @@ Quickstart
 #. Download Fitnesse_
 #. In the same directory, run ``git clone https://github.com/magmax/waferslim.git``
 #. Run Fitnesse_: ``java -jar fitnesse-standalone.jar -p 9000``
-#. Create a new *wiki* with this content::
+#. Create a new *wiki* with this content:
 
-   !define TEST_SYSTEM {slim}
+   .. code::
+      !define TEST_SYSTEM {slim}
 
-   !path .:fixtures
-   !define COMMAND_PATTERN {python -m waferslim.server -s %p -p }
+      !path .:fixtures
+      !define COMMAND_PATTERN {python -m waferslim.server -s %p -p }
 
-   |Import|
-   |my_fixture.py|
+      |Import|
+      |my_fixture.py|
 
-   |MyClass|
-   |arg_1|arg_2|test?|
-   |1|1|true|
-   |1|0|true|
+      |MyClass|
+      |arg_1|arg_2|test?|
+      |1|1|true|
+      |1|0|true|
 
 #. Write ``fixtures/my_fixture.py``:
 
-.. code:: python
+   .. code:: python
 
-   class MyClass(object):
-       arg_1 = None
-       arg_2 = None
+      class MyClass(object):
+          arg_1 = None
+          arg_2 = None
 
-       def setArg_1(self, value):
-          self.arg_1 = value
+          def setArg_1(self, value):
+             self.arg_1 = value
 
-       def setArg_2(self, value):
-          self.arg_2 = value
+          def setArg_2(self, value):
+             self.arg_2 = value
 
-       def test(self):
-          // whatever; i.e.: compare arguments
-          return self.arg_1 == arg_2
+          def test(self):
+             // whatever; i.e.: compare arguments
+             return self.arg_1 == arg_2
+
 #. Run tests
 
 More information about `using Fitnesse with Python`_ (Spanish)
