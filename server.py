@@ -132,13 +132,15 @@ def _get_options():
 
 def _setup_logging(options):
     ''' Configure standard logging package '''
+    logging.basicConfig()
     if os.path.exists(options.logconf):
-        logging.config.fileConfig(options.logconf)
+        handler = logging.FileHandler(options.logconf)
+        handler.setFormatter(logging.Formatter('%(asctime)-15s %(levelname)s - %(message)s'))
+        logging.getLogger().addHandler(handler)
+
     else:
-        logging.basicConfig()
         if options.logconf:
             logging.warn('Invalid logging config file: %s' % options.logconf)
-
 
 def _setup_syspath(options):
     ''' Configure syspath '''

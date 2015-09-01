@@ -5,6 +5,7 @@ The latest source code is available at http://code.launchpad.net/waferslim.
 
 Copyright 2009-2010 by the author(s). All rights reserved
 '''
+import logging
 
 _BAD_INSTRUCTION = 'INVALID_STATEMENT'
 _NO_CLASS = 'NO_CLASS'
@@ -93,18 +94,21 @@ class Call(Instruction):
         '''
         instance_name, target_name = params[0], params[1]
         instance = execution_context.get_instance(instance_name)
-        if instance is not None:
-            target = execution_context.target_for(instance, target_name)
-            if target is not None:
-                args = execution_context.to_args(params, 2)
-                result = target(*args)
-                return (result, True)
-            else:
-                cause = '%s %s %s' % (_NO_METHOD, target_name,
-                                      type(instance).__name__)
-                results.failed(self, cause)
-        else:  # instance is None
-            results.failed(self, '%s %s' % (_NO_INSTANCE, instance_name))
+        try:
+            if instance is not None:
+                target = execution_context.target_for(instance, target_name)
+                if target is not None:
+                    args = execution_context.to_args(params, 2)
+                    result = target(*args)
+                    return (result, True)
+                else:
+                    cause = '%s %s %s' % (_NO_METHOD, target_name,
+                                          type(instance).__name__)
+                    results.failed(self, cause)
+            else:  # instance is None
+                results.failed(self, '%s %s' % (_NO_INSTANCE, instance_name))
+        except KeyError:
+            logging.warning('Method %s not found in class %s', target_name, instance_name)
         return (None, False)
 
 
