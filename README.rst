@@ -17,6 +17,7 @@ Quickstart
 #. Create a new *wiki* with this content:
 
    .. code::
+
       !define TEST_SYSTEM {slim}
 
       !path .:fixtures
