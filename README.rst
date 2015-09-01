@@ -16,7 +16,7 @@ Quickstart
 #. Run Fitnesse_: ``java -jar fitnesse-standalone.jar -p 9000``
 #. Create a new *wiki* with this content:
 
-   .. code::
+   .. code:: text
 
       !define TEST_SYSTEM {slim}
 
