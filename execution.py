@@ -243,7 +243,13 @@ class ExecutionContext:
         _debug(self._logger, 'Importing %s%s', 
                            (self._isolate_imports and 'isolated ' or '', 
                             args[0]))
-        mod = ExecutionContext._REAL_IMPORT(*args, **kwds)
+        try:
+            mod = ExecutionContext._REAL_IMPORT(*args, **kwds)
+        except Exception as e:
+            self._logger.exception(e)
+            self._logger.error('error importing %s', e)
+            return
+
         self._imported[mod.__name__] = mod
         self._modules[mod.__name__] = mod
         return mod
