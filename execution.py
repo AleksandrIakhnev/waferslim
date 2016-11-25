@@ -7,6 +7,7 @@ The latest source code is available at http://code.launchpad.net/waferslim.
 
 Copyright 2009-2010 by the author(s). All rights reserved 
 '''
+import traceback
 import builtins, logging, re, sys, threading
 from waferslim.instructions import Instruction, \
                                    Make, Call, CallAndAssign, Import
@@ -94,7 +95,13 @@ class Instructions:
                 self._logger.warn('Error executing %s:', instruction, 
                                   exc_info=1)
                 stop_test = 'stoptest' in type(error).__name__.lower()
-                results.failed(instruction, error.args[0], stop_test)
+
+                if len(error.args) > 0:
+                    cause = error.args[0]
+                else:
+                    cause = '\n'.join([str(type(error)),traceback.format_exc()])
+
+                results.failed(instruction, cause, stop_test)
                 if stop_test: 
                     break
 
