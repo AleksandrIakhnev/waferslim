@@ -99,8 +99,7 @@ class Instructions:
                 if len(error.args) > 0:
                     cause = error.args[0]
                 else:
-                    formatted = traceback.format_exc()
-                    cause = "%s \n %s" %(str(type(error)), formatted)
+                    cause = '\n'.join([str(type(error)),traceback.format_exc()])
 
                 results.failed(instruction, cause, stop_test)
                 if stop_test: 
