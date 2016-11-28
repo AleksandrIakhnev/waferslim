@@ -1,5 +1,16 @@
 import os
 import collections
+
+import sys
+import os
+import logging
+
+format = ' '.join(['%(asctime)s', '%(levelname)s', '%(module)s', '%(funcName)s', 'L%(lineno)s', '%(message)s'])
+logging.basicConfig(stream=sys.stdout, format=format, level=logging.INFO)
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
+
+
 from waferslim import converters
 from waferslim import execution
 from waferslim import instructions
@@ -20,19 +31,20 @@ def execute(instruction):
     return execution_results.collection()
 
 
-Options = collections.namedtuple('Options', 'syspath inethost port verbose')
+Options = collections.namedtuple('Options', 'syspath inethost port verbose keepalive')
 options = Options(
-    os.path.join(os.path.dirname(__file__), 'fixtures'),
+    os.path.normpath(os.path.join(os.path.dirname(__file__), 'fixtures')),
     '127.0.0.1',
     '8085',
     False,
+    False
 )
 server._setup_syspath(options)
 server.WaferSlimServer(options)
 
 
 assert execute(
-    instructions.Import('import_0_0', ['echo_fixture.py'])
+    instructions.Import('import_0_0', ['fixtures.echo_fixture'])
 ) == [['import_0_0', 'OK']]
 
 assert execute(

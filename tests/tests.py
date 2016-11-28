@@ -1,57 +1,66 @@
 import unittest
+
+import sys
+import os
+import logging
+
+format = ' '.join(['%(asctime)s', '%(levelname)s', '%(module)s', '%(funcName)s', 'L%(lineno)s', '%(message)s'])
+logging.basicConfig(stream=sys.stdout, format=format, level=logging.INFO)
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
+
 from waferslim import execution
 from waferslim.tests.fixtures import echo_fixture
+from waferslim.import_utils import get_aliases
+import waferslim.import_utils
 
 
 class ConventionsTestCase(unittest.TestCase):
     def test_lower_camel_case(self):
         self.assertEqual(
-            execution.to_lower_camel_case('pythonic_case'),
+            waferslim.import_utils.to_lower_camel_case('pythonic_case'),
             'pythonicCase'
         )
         self.assertEqual(
-            execution.to_lower_camel_case('CamelCase'),
+            waferslim.import_utils.to_lower_camel_case('CamelCase'),
             'camelCase'
         )
         self.assertEqual(
-            execution.to_lower_camel_case('camelCase'),
+            waferslim.import_utils.to_lower_camel_case('camelCase'),
             'camelCase'
         )
 
     def test_upper_camel_case(self):
         self.assertEqual(
-            execution.to_upper_camel_case('pythonic_case'),
+            waferslim.import_utils.to_upper_camel_case('pythonic_case'),
             'PythonicCase'
         )
         self.assertEqual(
-            execution.to_upper_camel_case('CamelCase'),
+            waferslim.import_utils.to_upper_camel_case('CamelCase'),
             'CamelCase'
         )
         self.assertEqual(
-            execution.to_upper_camel_case('camelCase'),
+            waferslim.import_utils.to_upper_camel_case('camelCase'),
             'CamelCase'
         )
 
     def test_pythonic_case(self):
         self.assertEqual(
-            execution.to_pythonic('pythonicCase'),
+            waferslim.import_utils.to_pythonic('pythonicCase'),
             'pythonic_case'
         )
         self.assertEqual(
-            execution.to_pythonic('CamelCase'),
+            waferslim.import_utils.to_pythonic('CamelCase'),
             'camel_case'
         )
         self.assertEqual(
-            execution.to_pythonic('camelCase'),
+            waferslim.import_utils.to_pythonic('camelCase'),
             'camel_case'
         )
 
     def test_aliases(self):
-        self.assertEqual(
-            execution.ExecutionContext.get_aliases([
-                'pythonic_case',
-                'CamelCase',
-            ]),
+        result = waferslim.import_utils.get_aliases(['pythonic_case', 'CamelCase'])
+        self.assertEqual(result,
             {
                 'pythonic_case': 'pythonic_case',
                 'pythonicCase': 'pythonic_case',
@@ -64,7 +73,7 @@ class ConventionsTestCase(unittest.TestCase):
 
 class GetClassesTestCase(unittest.TestCase):
     def test_get_classes_finds_only_methods(self):
-        classes = list(execution.get_classes(echo_fixture))
+        classes = list(waferslim.import_utils.get_classes(echo_fixture))
         self.assertEqual(len(classes), 1)
         name, data = classes[0]
         self.assertEqual(name, 'EchoFixture')
