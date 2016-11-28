@@ -34,13 +34,13 @@ def underscored_lowercase(char):
     else:
         return char
 
-#@staticmethod
+
 def get_aliases(methods):
     aliases = dict((n, n) for n in methods)
     aliases.update(convention_aliases(aliases))
     return aliases
 
-#@staticmethod
+
 def convention_aliases(aliases):
     camel_caseds = dict([
                             (to_lower_camel_case(name), aliases[name])

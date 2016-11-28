@@ -1,4 +1,4 @@
-import os
+import unittest
 import collections
 
 import sys
@@ -24,34 +24,30 @@ mute_unused_warnings = (converters, execution, instructions,
 
 execution_context = execution.ExecutionContext()
 
+class ExecuteTests(unittest.TestCase):
+    def setUp(self):
+        Options = collections.namedtuple('Options', 'syspath inethost port verbose keepalive')
+        options = Options(
+            os.path.normpath(os.path.join(os.path.dirname(__file__), 'fixtures')),
+            '127.0.0.1',
+            '8085',
+            False,
+            False
+        )
+        server._setup_syspath(options)
+        server.WaferSlimServer(options)
 
-def execute(instruction):
-    execution_results = execution.Results()
-    instruction.execute(execution_context, execution_results)
-    return execution_results.collection()
+    def callSut(self, instruction):
+        execution_results = execution.Results()
+        instruction.execute(execution_context, execution_results)
+        return execution_results.collection()
 
+    def test_execute_hello(self):
+        self.assertEqual(self.callSut(instructions.Import('import_0_0', ['fixtures.echo_fixture'])),
+                         [['import_0_0', 'OK']])
 
-Options = collections.namedtuple('Options', 'syspath inethost port verbose keepalive')
-options = Options(
-    os.path.normpath(os.path.join(os.path.dirname(__file__), 'fixtures')),
-    '127.0.0.1',
-    '8085',
-    False,
-    False
-)
-server._setup_syspath(options)
-server.WaferSlimServer(options)
+        self.assertEqual(self.callSut(instructions.Make('make_0_0', ['echoer', 'EchoFixture'])),
+                         [['make_0_0', 'OK']])
 
-
-assert execute(
-    instructions.Import('import_0_0', ['fixtures.echo_fixture'])
-) == [['import_0_0', 'OK']]
-
-assert execute(
-    instructions.Make('make_0_0', ['echoer', 'EchoFixture'])
-) == [['make_0_0', 'OK']]
-
-assert execute(
-    instructions.Call('call_0_0',
-                      ['echoer', 'echo', 'hello'])
-) == [['call_0_0', 'hello']]
+        self.assertEqual(self.callSut(instructions.Call('call_0_0',['echoer', 'echo', 'hello'])),
+                         [['call_0_0', 'hello']])
