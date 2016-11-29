@@ -12,6 +12,7 @@ import builtins, logging, re, sys, threading
 from waferslim.instructions import Instruction, \
                                    Make, Call, CallAndAssign, Import
 from waferslim.converters import to_string
+import waferslim.import_utils
 
 _OK = 'OK'
 _EXCEPTION = '__EXCEPTION__:'
@@ -132,10 +133,7 @@ class ParamsConverter:
             return self._execution_context.get_symbol(match.groups()[0])
         return ''
 
-def pythonic(method_name):
-    ''' Returns a method_name converted from camelCase to pythonic_case'''
-    return method_name[0].lower() + \
-        ''.join([_underscored_lowercase(char) for char in method_name[1:]])
+
 
 def _underscored_lowercase(char):
     ''' Returns _<lowercase char> if char is uppercase; char otherwise'''
@@ -268,7 +266,7 @@ class ExecutionContext:
         try:
             return getattr(instance, 
                            convert_name \
-                           and pythonic(method_name) \
+                           and waferslim.import_utils.to_pythonic(method_name) \
                            or method_name)
         except AttributeError:
             return convert_name \
