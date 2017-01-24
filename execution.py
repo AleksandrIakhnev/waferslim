@@ -274,14 +274,25 @@ class ExecutionContext:
             return convert_name \
                     and self.target_for(instance, method_name, False) \
                     or None
-    
+
+    def myeval(self, params):
+        logging.info("do eval %s", params)
+
     def get_library_method(self, name):
         ''' Get a method from the library '''
         _debug(self._logger, 'Getting library method %s', name)
+        logging.info("try to add eval")
         for instance in self._libraries:
+            logging.info("lib:%s", instance)
             target = self.target_for(instance, name, True)
             if target:
                 return target
+
+        if name == 'eval':
+            logging.info("return eval")
+            target = self.myeval
+            return target
+        logging.info("return None for name %s", name)
         return None
     
     def warn_polluting_library_methods(self, library):

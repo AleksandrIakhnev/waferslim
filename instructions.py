@@ -102,7 +102,8 @@ class Call(Instruction):
                          or None
         if not target:
             target = execution_context.get_library_method(target_name)
-        
+        import logging
+        logging.info("Got target %s", target)
         if target:
             return self._result(execution_context, target, params)
         elif instance is None:

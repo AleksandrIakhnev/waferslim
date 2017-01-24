@@ -15,6 +15,9 @@ Fitnesse table markup:
 
 '''
 
+import logging
+
+
 class FileSupport():
     ''' A class to use as a library '''
     def delete(self, folder):
@@ -26,3 +29,8 @@ class MyFixture():
     def do_business_logic(self, folder):
         ''' Do some business logic here... '''
         pass
+
+
+class Eval():
+    def do_eval(self,params):
+        logging.info("Do eval wit params %s", params)
